@@ -7,7 +7,7 @@ use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 
 // Service Account JSON dosyasını kullanarak Firebase'i başlat
-$factory = (new Factory)->withServiceAccount('serviceAccountKey.json');
+$factory = (new Factory)->withServiceAccount('serviceAccountKey.json'); // service account on firebase
 $messaging = $factory->createMessaging();
 
 // Bildirim verileri
