@@ -1,13 +1,21 @@
 <?php
 
-require 'vendor/autoload.php'; // Firebase PHP SDK'yı yükle
+// Load config if available, otherwise use defaults
+if (file_exists('config.php')) {
+    require_once 'config.php';
+} else {
+    define('API_URL', 'https://api.nativez.dev');
+    define('FIREBASE_SERVICE_ACCOUNT', 'serviceAccountKey.json');
+}
+
+require 'vendor/autoload.php'; // Load Firebase PHP SDK
 
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 
-// Service Account JSON dosyasını kullanarak Firebase'i başlat
-$factory = (new Factory)->withServiceAccount('serviceAccountKey.json'); // service account on firebase
+// Initialize Firebase using Service Account JSON file
+$factory = (new Factory)->withServiceAccount(FIREBASE_SERVICE_ACCOUNT);
 $messaging = $factory->createMessaging();
 
 // Bildirim verileri
@@ -22,7 +30,7 @@ $fcmToken = $_POST['fcmToken'];
 // API'den receiverId'yi almak için cURL isteği
 $ch = curl_init();
 
-curl_setopt($ch, CURLOPT_URL, "https://api.schweis.eu/rescuesync/process");
+curl_setopt($ch, CURLOPT_URL, API_URL . "/rescuesync/process");
 curl_setopt($ch, CURLOPT_POST, 1);
 curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
     'action' => 'getId',

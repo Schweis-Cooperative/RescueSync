@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print
 
-// Flutter paketlerini projeye dahil ediyoruz
+// Import Flutter packages
 import 'package:alarm/alarm.dart';
 // ignore: depend_on_referenced_packages
 import 'package:firebase_core/firebase_core.dart';
@@ -9,10 +9,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 
-// Bize ait fonksiyon ve sınıfları projeye dahil ediyoruz.
+// Import our custom functions and classes
 import 'package:rescuesync/backend/client/sos.dart';
 import 'package:rescuesync/screens/authScreen.dart';
 import 'package:rescuesync/screens/homeScreen.dart';
+import 'package:rescuesync/constants/app_constants.dart';
 
 
 // Bu değişken ile flutter local bildirim plugin sınıfını, değişkene aktarıyoruz.
@@ -38,8 +39,8 @@ void initializeNotifications() async {
 
   // Create Notification Channel
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
-    'put_alarm_channel', // Channel ID
-    'Start Alarm Channel', // Channel Name
+    AppConstants.notificationChannelId,
+    AppConstants.notificationChannelName,
     importance: Importance.high,
   );
 
@@ -61,8 +62,8 @@ Future<void> _firebaseMessagingBackgroundHandler(
     // Connect notification channel
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'put_alarm_channel', // Channel ID
-      'Start Alarm Channel', // Channel Name
+      AppConstants.notificationChannelId,
+      AppConstants.notificationChannelName,
       importance: Importance.high,
       priority: Priority.high,
     );

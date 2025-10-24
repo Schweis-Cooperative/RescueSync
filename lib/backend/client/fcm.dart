@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart' as firebase_messaging;
 import 'package:rescuesync/backend/client/auth.dart';
+import 'package:rescuesync/constants/app_constants.dart';
 
 import 'package:http/http.dart' as http;
 class FCMOnProcess {
@@ -58,9 +59,9 @@ class FCMOnProcess {
       'startTime': startTime,
       'fcmToken': fcmForCalling,
     };
-    // 2. FCM Bildirimi Gönder
+    // 2. Send FCM Notification
     var response = await client.post(
-      Uri.https('api.schweis.eu', '/rescuesync/fcm'),
+      Uri.parse('${AppConstants.apiBaseUrl}${AppConstants.fcmEndpoint}'),
       body: body,
     );
 

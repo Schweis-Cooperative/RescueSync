@@ -57,9 +57,20 @@ $soundAlarm = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Load config if available, otherwise use defaults
+    if (file_exists('config.php')) {
+        require_once 'config.php';
+    } else {
+        // Fallback to default values if config.php doesn't exist
+        define('DB_HOST', 'localhost');
+        define('DB_NAME', 'schweis_rescuesync');
+        define('DB_USER', 'root');
+        define('DB_PASS', '');
+    }
+    
     require_once 'rescuesync.php';
 
-    $rescuesync = new RescueSync('localhost', 'schweis_rescuesync', 'root', '');
+    $rescuesync = new RescueSync(DB_HOST, DB_NAME, DB_USER, DB_PASS);
 
     $action = $_POST['action'] ?? '';
 
@@ -279,38 +290,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo json_encode(['status' => 'success', 'data' => $result]);
         }
+    } else if ($action == 'changeUsername' || $action == 'changePassword' || $action == 'changeMail') {
+        $column = match ($action) {
+            'changeUsername' => 'username',
+            'changePassword' => 'password',
+            'changeMail' => 'email',
+            default => null,
+        };
+
+        $username = $_POST['username'] ?? null;
+        $data = $_POST['data'] ?? null;
+
+        if (!$username || !$data) {
+            echo json_encode(['status' => 'error', 'data' => 'Username or Data field is missing']);
+            exit;
+        }
+
+        if (!$column) {
+            echo json_encode(['status' => 'error', 'data' => 'Invalid action type']);
+            exit;
+        }
+
+        $result = $rescuesync->updateAccountInformation($username, $data, $column);
+        if (str_contains($result, 'Error')) {
+            echo json_encode(['status' => 'error', 'data' => $result]);
+        } else {
+            echo json_encode(['status' => 'success', 'data' => $result]);
+        }
     }
 } else {
     echo json_encode(['status' => 'error', 'data' => 'Invalid action.']);
-}
-
-
-
-if ($action == 'changeUsername' || $action == 'changePassword' || $action == 'changeMail') {
-    $column = match ($action) {
-        'changeUsername' => 'username',
-        'changePassword' => 'password',
-        'changeMail' => 'email',
-        default => null,
-    };
-
-    $username = $_POST['username'] ?? null;
-    $data = $_POST['data'] ?? null;
-
-    if (!$username || !$data) {
-        echo json_encode(['status' => 'error', 'data' => 'Username or Data field is missing']);
-        exit;
-    }
-
-    if (!$column) {
-        echo json_encode(['status' => 'error', 'data' => 'Invalid action type']);
-        exit;
-    }
-
-    $result = $rescuesync->updateAccountInformation($username, $data, $column);
-    if (str_contains($result, 'Error')) {
-        echo json_encode(['status' => 'error', 'data' => $result]);
-    } else {
-        echo json_encode(['status' => 'success', 'data' => $result]);
-    }
 }

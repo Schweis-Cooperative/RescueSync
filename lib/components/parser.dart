@@ -11,7 +11,7 @@ class TypeParser {
     if (value is int) return value.toDouble();
     if (value is String) return double.tryParse(value) ?? 1.0;
     return 1.0;
-  }
+  } 
 
    static bool toBool(dynamic value) {
     if (value is bool) return value;

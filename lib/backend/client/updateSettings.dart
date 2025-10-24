@@ -11,7 +11,7 @@ class UpdateData {
       Map<String, String> body = {'roomCode': roomCode, 'action': action};
 
       var response = await client
-          .post(Uri.https('api.schweis.eu', '/rescuesync/process'), body: body);
+          .post(Uri.https('api.nativez.dev', '/rescuesync/process'), body: body);
 
       var responseBody = utf8.decode(response.bodyBytes);
       // print('Response Body: $responseBody');
@@ -40,7 +40,7 @@ class UpdateData {
       Map<String, String> body = {'username': username, 'data' : data, 'action': action};
 
       var response = await client
-          .post(Uri.https('api.schweis.eu', '/rescuesync/process'), body: body);
+          .post(Uri.https('api.nativez.dev', '/rescuesync/process'), body: body);
 
       var responseBody = utf8.decode(response.bodyBytes);
       // print('Response Body: $responseBody');
@@ -75,7 +75,7 @@ class UpdateData {
       Map<dynamic, dynamic> body = {'username': username, 'roomCode' : roomCode,  'update' : data, 'action': action};
 
       var response = await client
-          .post(Uri.https('api.schweis.eu', '/rescuesync/process'), body: body);
+          .post(Uri.https('api.nativez.dev', '/rescuesync/process'), body: body);
 
       var responseBody = utf8.decode(response.bodyBytes);
       // print('Response Body: $responseBody');

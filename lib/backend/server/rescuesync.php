@@ -252,9 +252,7 @@ class RescueSync
                     $check = $roomsStmt->fetch(PDO::FETCH_DEFAULT);
                     if (!$check) {
                         $roomStmt = $this->pdo->prepare(
-                            // 'INSERT INTO users (roomCode, ownerId, auidoPath, duration, title, body, loopAudio, vibrate, volume, fadeDuration, fulLScreenIntent, enforceVolume) VALUES () '
-
-                            'INSERT INTO rooms (roomCode, ownerId) VALUES (:room, :ownerId) '
+                            'INSERT INTO rooms (roomCode, ownerId) VALUES (:room, :ownerId)'
                         );
                         $roomStmt->execute([
                             'room' => $room,
@@ -403,7 +401,7 @@ class RescueSync
             }
 
             if (!$isOwner && in_array($column, $ownerAction)) {
-                throw new Error("Bu işlem için yetkiniz geçersiz!");
+                throw new Exception("You do not have permission for this operation!");
             } else {
                 $stmtUpdate = $this->pdo->prepare("UPDATE rooms SET $column = :updateColumn WHERE roomCode = :roomCode");
                 $stmtUpdate->execute([
@@ -424,5 +422,9 @@ class RescueSync
     }
 
 
-    public function getHomeScreen($username) {}
+    public function getHomeScreen($username) {
+        // TODO: Implement home screen data fetching
+        // This should return user stats, recent activity, etc.
+        return null;
+    }
 }

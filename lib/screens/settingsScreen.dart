@@ -81,7 +81,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           }
           if(_updateDataSettings['getLoopAudio'] == '1') {
             loopAudio = true;
-          } {
+          } else {
             loopAudio = false;
           }
 
@@ -94,9 +94,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
            if(_updateDataSettings['getFullScreenIntent'] == 'true') {
             value = true;
-          } {
+          } else {
             value = false;
-            print(_updateDataSettings['getFullScreenIntent']);
           }
 
       });

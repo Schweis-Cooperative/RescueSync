@@ -24,6 +24,7 @@ import 'package:rescuesync/main.dart';
 import 'package:rescuesync/screens/aboutScreen.dart';
 import 'package:rescuesync/screens/authScreen.dart';
 import 'package:rescuesync/screens/settingsScreen.dart';
+import 'package:rescuesync/constants/app_constants.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -74,8 +75,8 @@ class _HomescreenState extends State<Homescreen> {
         if (message.data.isNotEmpty) {
           const AndroidNotificationDetails androidPlatformChannelSpecifics =
               AndroidNotificationDetails(
-            'put_alarm_channel', // Kanal ID
-            'Start Alarm Channel', // Kanal İsmi
+            AppConstants.notificationChannelId,
+            AppConstants.notificationChannelName,
             importance: Importance.high,
             priority: Priority.high,
           );
@@ -105,11 +106,11 @@ class _HomescreenState extends State<Homescreen> {
             animType: AnimType.scale,
             dialogType: DialogType.info,
             body: const Center(child: Text(
-                    'Bu uygulama beta sürümündedir (v0.1.0) lütfen bu bilinçle kullanınız. Herhangi bir sorunu destek ekibine bildirin veya Github reposunda pull request oluşturun.',
+                    'This application is in beta version. Please use it with this awareness. Report any issues to the support team or create a pull request on the Github repository.',
                     style: TextStyle(fontStyle: FontStyle.italic),
                   ),),
             title: 'BETA',
-            desc:   'RescueSyncBETA',
+            desc:   '${AppConstants.appName} BETA',
             btnOkOnPress: () {
             },
             ).show();
@@ -142,12 +143,15 @@ class _HomescreenState extends State<Homescreen> {
     String nickname = box.read('username') ?? 'null';
     dynamic users = await _auth.auth(username: nickname, action: 'getId');
 
-    if (nickname == 'null' ||
-        (users == null ||
-            users == 'None' ||
-            users ==
-                "Error: SQLSTATE[42S02]: Base table or view not found: 1932 Table 'rescuesync.users' doesn't exist in engine" ||
-            users.toString().contains('SQLSTATE')) || users == "Exception: ClientException with SocketException: Failed host lookup: 'api.schweis.eu' (OS Error: No address associated with hostname, errno = 7), uri=https://api.schweis.eu/rescuesync/process") {
+    // Check if user data is invalid or contains errors
+    bool isInvalidUser = nickname == 'null' ||
+        users == null ||
+        users == 'None' ||
+        users.toString().contains('SQLSTATE') ||
+        users.toString().contains('Error:') ||
+        users.toString().contains('Exception:');
+
+    if (isInvalidUser) {
       box.erase();
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (builder) => const AuthScreen()));
@@ -157,10 +161,6 @@ class _HomescreenState extends State<Homescreen> {
     setState(() {
       username = nickname;
     });
-
-   // print(nickname);
-   // print(username);
-   // print(users);
   }
 
   @override
@@ -183,20 +183,12 @@ class _HomescreenState extends State<Homescreen> {
           users = fetchedUsers;
           isLoading = false;
         });
-        // print('Users successfully retrieved: $users');
-        print(userController.room.value);
       } catch (e) {
-        // print('Error occurred while retrieving users: $e');
         setState(() {
           isLoading = false;
         });
       }
     } else {
-      // print('Room variable is null or Loading...');
-      if(userController.room.value != 'None') {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder) => const AuthScreen()));
-        box.erase();
-      }
       setState(() {
         isLoading = false;
       });
@@ -225,7 +217,7 @@ class _HomescreenState extends State<Homescreen> {
                 color: Colors.blue,
               ),
               child: Text(
-                "Hello, $username\n\nRescueSync Android App v0.1.0",
+                "Hello, $username\n\n${AppConstants.appName} Android App ${AppConstants.appVersion}",
                 style: const TextStyle(
                   color: Color.fromARGB(255, 99, 71, 71),
                   fontSize: 18,
@@ -331,7 +323,7 @@ class _HomescreenState extends State<Homescreen> {
                                             callerName: username,
                                             receiverName: users[index]
                                                 ['username']!,
-                                            duration: 30,
+                                            duration: AppConstants.defaultAlarmDuration,
                                             startTime: 'now',
                                           );
                                         },
@@ -356,7 +348,7 @@ class _HomescreenState extends State<Homescreen> {
                                   _fcmOnProcess.sendFcmNotification(
                                     callerName: username,
                                     receiverName: user['username']!,
-                                    duration: 30,
+                                    duration: AppConstants.defaultAlarmDuration,
                                     startTime: 'now',
                                   );
                                 }

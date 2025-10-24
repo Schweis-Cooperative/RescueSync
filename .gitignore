@@ -25,3 +25,22 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Memory bank
+memory-bank/
+
+# Agents
+AGENTS.md
+
+# Completed phases
+PHASE1_COMPLETED.md
+
+# PHP Composer dependencies
+lib/backend/server/vendor/
+
+# Temporary/test directories
+lib/backend/freedom/
+lib/backend/ai/
+
+# Firebase service account (sensitive)
+lib/backend/server/serviceAccountKey.json
